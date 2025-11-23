@@ -23,6 +23,7 @@ public class Booking {
     private String scheduleId; //ref to flightschedule
 
     private String contactEmail;
+    private List<String> scheduleIds;
 
     private List<Passenger> passengers;
     private BookingStatus status;

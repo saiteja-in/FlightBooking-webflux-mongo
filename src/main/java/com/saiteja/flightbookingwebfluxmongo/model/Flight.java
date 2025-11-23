@@ -19,7 +19,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Document(collection="flight")
+@Document(collection="flights")
 public class Flight {
     @Id
     private String id;

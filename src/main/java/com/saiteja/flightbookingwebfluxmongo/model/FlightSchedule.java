@@ -1,5 +1,6 @@
 package com.saiteja.flightbookingwebfluxmongo.model;
 
+import com.saiteja.flightbookingwebfluxmongo.model.enums.Airline;
 import com.saiteja.flightbookingwebfluxmongo.model.enums.FlightStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
