@@ -1,5 +1,6 @@
 package com.saiteja.flightbookingwebfluxmongo.model;
 
+import com.saiteja.flightbookingwebfluxmongo.model.enums.UserRole;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
