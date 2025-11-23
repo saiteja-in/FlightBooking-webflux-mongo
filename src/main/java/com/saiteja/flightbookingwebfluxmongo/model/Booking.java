@@ -1,6 +1,11 @@
 package com.saiteja.flightbookingwebfluxmongo.model;
 
 import com.saiteja.flightbookingwebfluxmongo.model.enums.BookingStatus;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -19,13 +24,20 @@ public class Booking {
 
     @Id
     private String id;
+    @NotBlank(message = "PNR cannot be empty")
     private String pnr;
-    private String scheduleId; //ref to flightschedule
 
+    @NotEmpty(message = "At least one schedule must be selected")
+    private List<@NotBlank String> scheduleIds;
+
+    @NotBlank(message = "Contact email is required")
+    @Email(message = "Invalid email format")
     private String contactEmail;
-    private List<String> scheduleIds;
 
-    private List<Passenger> passengers;
+    @NotEmpty(message = "At least one passenger is required")
+    private List<@Valid Passenger> passengers;
+
+    @NotNull(message = "Booking status is required")
     private BookingStatus status;
     @CreatedDate
     private LocalDateTime createdAt;
