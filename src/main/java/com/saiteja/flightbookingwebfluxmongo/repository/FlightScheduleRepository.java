@@ -8,11 +8,5 @@ import java.time.LocalDate;
 
 public interface FlightScheduleRepository extends ReactiveMongoRepository<FlightSchedule, String> {
 
-    Flux<FlightSchedule> findByFlightId(String flightId);
-
-    Flux<FlightSchedule> findByFlightDateAndOriginAirportAndDestinationAirport(
-            LocalDate date,
-            String origin,
-            String destination
-    );
+    Flux<FlightSchedule> findByFlightIdAndFlightDate(String flightId, LocalDate date);
 }

@@ -11,7 +11,7 @@ public interface FlightService {
 
     Flux<FlightResponse> getAllFlights();
 
-    Mono<FlightResponse> getFlightById(String id);
+    Mono<FlightResponse> getFlightByFlightNumber(String flightNumber);
 
     Mono<String> deleteFlight(String id);
 }

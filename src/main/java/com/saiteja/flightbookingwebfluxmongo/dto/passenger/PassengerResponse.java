@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @Builder
 public class PassengerResponse {
-
     private String fullName;
     private Gender gender;
     private Integer age;

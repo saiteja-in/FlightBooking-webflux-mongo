@@ -46,11 +46,15 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Mono<FlightResponse> getFlightById(String id) {
-        return flightRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Flight not found with id: " + id)))
+    public Mono<FlightResponse> getFlightByFlightNumber(String flightNumber) {
+        return flightRepository.findByFlightNumber(flightNumber.trim().toUpperCase())
+                .switchIfEmpty(Mono.error(
+                        new ResourceNotFoundException("Flight not found with number: " + flightNumber)
+                ))
                 .map(this::toResponse);
     }
+
+
 
     @Override
     public Mono<String> deleteFlight(String id) {
