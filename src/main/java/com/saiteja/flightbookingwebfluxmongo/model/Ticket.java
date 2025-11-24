@@ -1,6 +1,5 @@
 package com.saiteja.flightbookingwebfluxmongo.model;
 
-import com.saiteja.flightbookingwebfluxmongo.model.Passenger;
 import com.saiteja.flightbookingwebfluxmongo.model.enums.TicketStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

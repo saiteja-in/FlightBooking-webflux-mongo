@@ -3,7 +3,6 @@ package com.saiteja.flightbookingwebfluxmongo.service.impl;
 import com.saiteja.flightbookingwebfluxmongo.dto.passenger.PassengerResponse;
 import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import com.saiteja.flightbookingwebfluxmongo.exception.ResourceNotFoundException;
-import com.saiteja.flightbookingwebfluxmongo.model.Booking;
 import com.saiteja.flightbookingwebfluxmongo.model.Ticket;
 import com.saiteja.flightbookingwebfluxmongo.model.enums.TicketStatus;
 import com.saiteja.flightbookingwebfluxmongo.repository.BookingRepository;

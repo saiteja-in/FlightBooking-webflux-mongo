@@ -1,7 +1,6 @@
 package com.saiteja.flightbookingwebfluxmongo.model;
 
 import com.saiteja.flightbookingwebfluxmongo.model.enums.Airline;
-import com.saiteja.flightbookingwebfluxmongo.model.enums.FlightStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
