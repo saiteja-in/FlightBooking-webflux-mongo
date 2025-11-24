@@ -6,6 +6,7 @@ import com.saiteja.flightbookingwebfluxmongo.dto.flight.FlightSearchRequest;
 import com.saiteja.flightbookingwebfluxmongo.service.FlightScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -20,16 +21,22 @@ public class FlightScheduleController {
     private final FlightScheduleService flightScheduleService;
 
     @PostMapping("/inventory")
-    public Mono<FlightScheduleResponse> addInventory( @RequestBody FlightScheduleCreateRequest request) {
-        return flightScheduleService.createSchedule(request);
+    public Mono<ResponseEntity<FlightScheduleResponse>> addInventory(@RequestBody FlightScheduleCreateRequest request) {
+        return flightScheduleService.createSchedule(request)
+                .map(response -> ResponseEntity.status(201).body(response));
     }
 
     @PostMapping("/search")
-    public Flux<FlightScheduleResponse> searchFlights(@Valid @RequestBody FlightSearchRequest request) {
-        return flightScheduleService.searchFlights(
-                request.getOriginAirport().trim().toUpperCase(),
-                request.getDestinationAirport().trim().toUpperCase(),
-                request.getFlightDate()
+    public Mono<ResponseEntity<Flux<FlightScheduleResponse>>> searchFlights(@Valid @RequestBody FlightSearchRequest request) {
+        return Mono.just(
+                ResponseEntity.ok(
+                        flightScheduleService.searchFlights(
+                                request.getOriginAirport().trim().toUpperCase(),
+                                request.getDestinationAirport().trim().toUpperCase(),
+                                request.getFlightDate()
+                        )
+                )
         );
     }
+
 }

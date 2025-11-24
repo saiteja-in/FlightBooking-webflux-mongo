@@ -7,6 +7,7 @@ import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import com.saiteja.flightbookingwebfluxmongo.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,23 +22,19 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/booking/{scheduleId}")
-    public Mono<TicketResponse> bookFlight(
+    public Mono<ResponseEntity<TicketResponse>> bookFlight(
             @PathVariable String scheduleId,
             @RequestBody BookingCreateRequest request
     ) {
         request.setScheduleIds(List.of(scheduleId));
-        return bookingService.createBooking(request);
-    }
-
-
-    @GetMapping("/booking/history/{emailId}")
-    public Flux<BookingResponse> getBookingHistory(@PathVariable String emailId) {
-        return bookingService.getBookingsByEmail(emailId);
+        return bookingService.createBooking(request)
+                .map(response -> ResponseEntity.status(201).body(response));
     }
 
     @DeleteMapping("/booking/cancel/{pnr}")
-    public Mono<ApiResponse> cancelBooking(@PathVariable String pnr) {
+    public Mono<ResponseEntity<ApiResponse>> cancelBooking(@PathVariable String pnr) {
         return bookingService.cancelBooking(pnr)
-                .map(msg -> ApiResponse.builder().message(msg).build());
+                .map(msg -> ResponseEntity.status(200).body(ApiResponse.builder().message(msg).build()));
     }
+
 }
