@@ -29,8 +29,8 @@ public class FlightServiceImpl implements FlightService {
                     Flight flight = Flight.builder()
                             .flightNumber(request.getFlightNumber().trim())
                             .airline(request.getAirline())
-                            .originAirport(request.getOriginAirport().toUpperCase())
-                            .destinationAirport(request.getDestinationAirport().toUpperCase())
+                            .originAirport(request.getOriginAirport().trim().toUpperCase())
+                            .destinationAirport(request.getDestinationAirport().trim().toUpperCase())
                             .seatCapacity(request.getSeatCapacity())
                             .build();
 
