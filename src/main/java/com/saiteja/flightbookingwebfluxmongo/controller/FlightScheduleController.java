@@ -21,7 +21,7 @@ public class FlightScheduleController {
     private final FlightScheduleService flightScheduleService;
 
     @PostMapping("/inventory")
-    public Mono<ResponseEntity<FlightScheduleResponse>> addInventory(@RequestBody FlightScheduleCreateRequest request) {
+    public Mono<ResponseEntity<FlightScheduleResponse>> addInventory(@Valid @RequestBody FlightScheduleCreateRequest request) {
         return flightScheduleService.createSchedule(request)
                 .map(response -> ResponseEntity.status(201).body(response));
     }

@@ -38,6 +38,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Mono<TicketResponse> createBooking(BookingCreateRequest request) {
 
+        if (request.getScheduleIds() == null || request.getScheduleIds().isEmpty()) {
+            return Mono.error(new BadRequestException("At least one schedule id is required"));
+        }
+
         return validateAndLockSeats(request)
                 .flatMap(flightSchedule -> {
                     String pnr = generatePNR();

@@ -2,14 +2,12 @@ package com.saiteja.flightbookingwebfluxmongo.controller;
 
 import com.saiteja.flightbookingwebfluxmongo.dto.ApiResponse;
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingCreateRequest;
-import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingResponse;
 import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import com.saiteja.flightbookingwebfluxmongo.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class BookingController {
     @PostMapping("/booking/{scheduleId}")
     public Mono<ResponseEntity<TicketResponse>> bookFlight(
             @PathVariable String scheduleId,
-            @RequestBody BookingCreateRequest request
+            @Valid @RequestBody BookingCreateRequest request
     ) {
         request.setScheduleIds(List.of(scheduleId));
         return bookingService.createBooking(request)

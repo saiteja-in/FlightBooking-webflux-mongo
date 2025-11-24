@@ -1,7 +1,10 @@
 package com.saiteja.flightbookingwebfluxmongo.dto.booking;
 
 import com.saiteja.flightbookingwebfluxmongo.dto.passenger.PassengerRequest;
-import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.util.List;
@@ -12,10 +15,9 @@ public class BookingCreateRequest {
     @NotBlank @Email
     private String contactEmail;
 
-    @NotEmpty
-    private List<String> scheduleIds; // supports round trip
+    private List<@NotBlank String> scheduleIds; // supports round trip
 
     @NotEmpty
-    private List<PassengerRequest> passengers;
+    private List<@Valid PassengerRequest> passengers;
 }
 
