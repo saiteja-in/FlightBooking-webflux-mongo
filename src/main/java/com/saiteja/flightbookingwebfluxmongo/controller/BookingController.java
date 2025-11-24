@@ -3,6 +3,7 @@ package com.saiteja.flightbookingwebfluxmongo.controller;
 import com.saiteja.flightbookingwebfluxmongo.dto.ApiResponse;
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingCreateRequest;
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingResponse;
+import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import com.saiteja.flightbookingwebfluxmongo.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,14 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/booking/{scheduleId}")
-    public Mono<BookingResponse> bookFlight(@PathVariable String scheduleId,
-                                            @RequestBody BookingCreateRequest request) {
+    public Mono<TicketResponse> bookFlight(
+            @PathVariable String scheduleId,
+            @RequestBody BookingCreateRequest request
+    ) {
         request.setScheduleIds(List.of(scheduleId));
         return bookingService.createBooking(request);
     }
+
 
     @GetMapping("/booking/history/{emailId}")
     public Flux<BookingResponse> getBookingHistory(@PathVariable String emailId) {

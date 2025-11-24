@@ -3,15 +3,19 @@ package com.saiteja.flightbookingwebfluxmongo.service.impl;
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingCreateRequest;
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingResponse;
 import com.saiteja.flightbookingwebfluxmongo.dto.passenger.PassengerResponse;
+import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import com.saiteja.flightbookingwebfluxmongo.exception.BadRequestException;
 import com.saiteja.flightbookingwebfluxmongo.exception.ResourceNotFoundException;
 import com.saiteja.flightbookingwebfluxmongo.model.Booking;
 import com.saiteja.flightbookingwebfluxmongo.model.FlightSchedule;
 import com.saiteja.flightbookingwebfluxmongo.model.Passenger;
 import com.saiteja.flightbookingwebfluxmongo.model.enums.BookingStatus;
+import com.saiteja.flightbookingwebfluxmongo.model.enums.TicketStatus;
 import com.saiteja.flightbookingwebfluxmongo.repository.BookingRepository;
 import com.saiteja.flightbookingwebfluxmongo.repository.FlightScheduleRepository;
+import com.saiteja.flightbookingwebfluxmongo.repository.TicketRepository;
 import com.saiteja.flightbookingwebfluxmongo.service.BookingService;
+import com.saiteja.flightbookingwebfluxmongo.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
@@ -28,9 +32,11 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final FlightScheduleRepository flightScheduleRepository;
     private final ReactiveMongoTemplate mongoTemplate;
+    private final TicketService ticketService;
+    private final TicketRepository ticketRepository;
 
     @Override
-    public Mono<BookingResponse> createBooking(BookingCreateRequest request) {
+    public Mono<TicketResponse> createBooking(BookingCreateRequest request) {
 
         return validateAndLockSeats(request)
                 .flatMap(flightSchedule -> {
@@ -45,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
                             .build();
 
                     return bookingRepository.save(booking)
-                            .map(this::toResponse);
+                            .flatMap(savedBooking -> ticketService.generateTicket(savedBooking.getId()));
                 });
     }
 
@@ -89,13 +95,41 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Mono<String> cancelBooking(String pnr) {
+
         return bookingRepository.findByPnr(pnr)
                 .switchIfEmpty(Mono.error(new ResourceNotFoundException("Booking not found")))
                 .flatMap(booking -> {
+
+                    if (booking.getStatus() == BookingStatus.CANCELLED)
+                        return Mono.error(new BadRequestException("Booking already cancelled"));
+
                     booking.setStatus(BookingStatus.CANCELLED);
-                    return bookingRepository.save(booking).thenReturn("Cancelled");
+
+                    Mono<Void> restoreSeats = flightScheduleRepository.findById(booking.getScheduleIds().get(0))
+                            .flatMap(schedule -> {
+                                schedule.setAvailableSeats(schedule.getAvailableSeats() + booking.getPassengers().size());
+                                schedule.getBookedSeats().removeIf(seat ->
+                                        booking.getPassengers().stream()
+                                                .anyMatch(p -> p.getSeatNumber().equals(seat))
+                                );
+                                return flightScheduleRepository.save(schedule).then();
+                            });
+
+                    Mono<Void> cancelTicket = ticketRepository.findByPnr(pnr)
+                            .flatMap(ticket -> {
+                                ticket.setStatus(TicketStatus.CANCELLED);
+                                return ticketRepository.save(ticket).then();
+                            })
+                            .onErrorResume(e -> Mono.empty());
+
+
+                    return restoreSeats
+                            .then(cancelTicket)
+                            .then(bookingRepository.save(booking))
+                            .thenReturn("Booking and Ticket Cancelled");
                 });
     }
+
 
     private List<Passenger> mapPassengers(BookingCreateRequest request) {
         return request.getPassengers().stream()

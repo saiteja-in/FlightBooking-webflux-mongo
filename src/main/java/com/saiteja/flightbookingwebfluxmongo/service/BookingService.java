@@ -2,12 +2,13 @@ package com.saiteja.flightbookingwebfluxmongo.service;
 
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingCreateRequest;
 import com.saiteja.flightbookingwebfluxmongo.dto.booking.BookingResponse;
+import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface BookingService {
 
-    Mono<BookingResponse> createBooking(BookingCreateRequest request);
+    Mono<TicketResponse> createBooking(BookingCreateRequest request);
 
     Mono<BookingResponse> getBookingByPnr(String pnr);
 

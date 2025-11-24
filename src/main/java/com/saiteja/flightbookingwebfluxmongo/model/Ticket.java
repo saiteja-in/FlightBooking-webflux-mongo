@@ -1,6 +1,7 @@
 package com.saiteja.flightbookingwebfluxmongo.model;
 
 import com.saiteja.flightbookingwebfluxmongo.model.Passenger;
+import com.saiteja.flightbookingwebfluxmongo.model.enums.TicketStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -32,6 +33,8 @@ public class Ticket {
 
     @NotBlank(message = "Schedule ID is required")
     private String scheduleId;
+    private TicketStatus status;
+
 
     @NotEmpty(message = "Passenger list cannot be empty")
     private List<@Valid Passenger> passengers;

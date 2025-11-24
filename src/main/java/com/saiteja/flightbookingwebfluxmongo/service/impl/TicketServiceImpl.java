@@ -5,6 +5,7 @@ import com.saiteja.flightbookingwebfluxmongo.dto.ticket.TicketResponse;
 import com.saiteja.flightbookingwebfluxmongo.exception.ResourceNotFoundException;
 import com.saiteja.flightbookingwebfluxmongo.model.Booking;
 import com.saiteja.flightbookingwebfluxmongo.model.Ticket;
+import com.saiteja.flightbookingwebfluxmongo.model.enums.TicketStatus;
 import com.saiteja.flightbookingwebfluxmongo.repository.BookingRepository;
 import com.saiteja.flightbookingwebfluxmongo.repository.TicketRepository;
 import com.saiteja.flightbookingwebfluxmongo.service.TicketService;
@@ -45,9 +46,11 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Mono<TicketResponse> getTicketByPnr(String pnr) {
         return ticketRepository.findByPnr(pnr)
+                .filter(ticket -> ticket.getStatus() != TicketStatus.CANCELLED)
                 .switchIfEmpty(Mono.error(new ResourceNotFoundException("Ticket not found")))
                 .map(this::toResponse);
     }
+
 
     private TicketResponse toResponse(Ticket ticket) {
         return TicketResponse.builder()
